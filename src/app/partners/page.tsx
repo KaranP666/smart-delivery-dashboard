@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { DeliveryPartner } from '@/types/partner';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import AddPartnerDialog from '@/components/AddPartnerDialog';
 
 export default function PartnersPage() {
   const [partners, setPartners] = useState<DeliveryPartner[]>([]);
@@ -17,6 +17,26 @@ export default function PartnersPage() {
         setLoading(false);
       });
   }, []);
+
+  const handleDelete = async (id: string) => {
+    const confirmed = confirm('Are you sure you want to delete this partner?');
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/partners/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.status === 204) {
+        setPartners((prev) => prev.filter((p) => p.id !== id));
+      } else {
+        alert('Failed to delete partner.');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Something went wrong.');
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -34,6 +54,7 @@ export default function PartnersPage() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">Delivery Partners</h1>
+      <AddPartnerDialog onAdded={(newPartner) => setPartners((prev) => [...prev, newPartner])} />
 
       {loading ? (
         <p className="text-gray-500">Loading...</p>
@@ -46,12 +67,8 @@ export default function PartnersPage() {
             >
               <div>
                 <h2 className="text-lg font-semibold mb-1">{partner.name}</h2>
-                <p className="text-sm text-gray-600 mb-1">
-                  📧 {partner.email}
-                </p>
-                <p className="text-sm text-gray-600 mb-3">
-                  📞 {partner.phone}
-                </p>
+                <p className="text-sm text-gray-600 mb-1">📧 {partner.email}</p>
+                <p className="text-sm text-gray-600 mb-3">📞 {partner.phone}</p>
                 <div className={`inline-block px-2 py-1 text-sm font-medium rounded-md ${getStatusColor(partner.status)}`}>
                   {partner.status}
                 </div>
@@ -61,8 +78,12 @@ export default function PartnersPage() {
               </div>
 
               <div className="mt-4 flex justify-end gap-2">
-                <Button variant="outline">Edit</Button>
-                <Button variant="destructive">Delete</Button>
+                <Button variant="outline" size="sm">
+                  Edit
+                </Button>
+                <Button variant="destructive" size="sm" onClick={() => handleDelete(partner.id)}>
+                  Delete
+                </Button>
               </div>
             </div>
           ))}
