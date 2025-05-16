@@ -1,5 +1,4 @@
-// schema.prisma
-// Learn more: https://pris.ly/d/prisma-schema
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -10,54 +9,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model DeliveryPartner {
-  id               String     @id @default(uuid())
-  name             String
-  email            String     @unique
-  phone            String
-  status           PartnerStatus
-  currentLoad      Int
-  areas            String[]
-  shiftStart       String     // HH:mm format
-  shiftEnd         String     // HH:mm format
-  rating           Float
-  completedOrders  Int
-  cancelledOrders  Int
-  assignments      Assignment[]
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-}
-
-model Order {
-  id              String     @id @default(uuid())
-  orderNumber     String     @unique
-  customerName    String
-  customerPhone   String
-  customerAddress String
-  area            String
-  status          OrderStatus
-  scheduledFor    String     // HH:mm format
-  totalAmount     Float
-  assignedTo      String?    // DeliveryPartner ID (nullable)
-  assignment      Assignment?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-}
-
-model Assignment {
-  id        String           @id @default(uuid())
-  orderId   String           @unique   // 🔧 Added unique constraint
-  partnerId String
-  timestamp DateTime         @default(now())
-  status    AssignmentStatus
-  reason    String?
-
-  order     Order            @relation(fields: [orderId], references: [id])
-  partner   DeliveryPartner  @relation(fields: [partnerId], references: [id])
-}
 enum PartnerStatus {
   active
   inactive
+}
+
+enum AssignmentStatus {
+  success
+  failed
 }
 
 enum OrderStatus {
@@ -67,7 +26,51 @@ enum OrderStatus {
   delivered
 }
 
-enum AssignmentStatus {
-  success
-  failed
+model Order {
+  id              String   @id @default(uuid())
+  orderNumber     String   @unique
+  customerName    String
+  customerPhone   String
+  customerAddress String
+  area            String
+  items           Json     // Array of { name, quantity, price }
+  status          OrderStatus
+  scheduledFor    String   // HH:mm
+  totalAmount     Float
+  assignedTo      String?  // DeliveryPartner ID (nullable)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  assignment      Assignment?
+}
+
+model DeliveryPartner {
+  id               String     @id @default(uuid())
+  name             String
+  email            String     @unique
+  phone            String
+  status           PartnerStatus
+  currentLoad      Int
+  areas            String[]
+  shiftStart       String
+  shiftEnd         String
+  rating           Float
+  completedOrders  Int
+  cancelledOrders  Int
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  assignments      Assignment[]
+}
+
+model Assignment {
+  id        String           @id @default(uuid())
+  orderId   String           @unique
+  partnerId String
+  timestamp DateTime         @default(now())
+  status    AssignmentStatus
+  reason    String?
+
+  order     Order            @relation(fields: [orderId], references: [id])
+  partner   DeliveryPartner  @relation(fields: [partnerId], references: [id])
 }
