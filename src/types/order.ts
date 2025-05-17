@@ -5,15 +5,14 @@ export type Order = {
   customerPhone: string;
   customerAddress: string;
   area: string;
-  items: {
-    name: string;
-    quantity: number;
-    price: number;
-  }[];
+  items: { name: string; quantity: number; price: number }[];
   status: 'pending' | 'assigned' | 'picked' | 'delivered';
   scheduledFor: string;
   totalAmount: number;
-  assignedTo?: string;
+  assignedTo?: string | null;
+  deliveryPartner?: {
+    name: string;
+  } | null;
   createdAt: string;
   updatedAt: string;
 };

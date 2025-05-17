@@ -27,40 +27,46 @@ enum OrderStatus {
 }
 
 model Order {
-  id              String   @id @default(uuid())
-  orderNumber     String   @unique
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
   customerName    String
   customerPhone   String
   customerAddress String
   area            String
-  items           Json     // Array of { name, quantity, price }
+  items           Json
   status          OrderStatus
-  scheduledFor    String   // HH:mm
+  scheduledFor    String
   totalAmount     Float
-  assignedTo      String?  // DeliveryPartner ID (nullable)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  assignedTo      String? // DeliveryPartner ID
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  assignment      Assignment?
+  assignment Assignment?
+
+  // ✅ Add this:
+  deliveryPartner DeliveryPartner? @relation(fields: [assignedTo], references: [id])
 }
 
 model DeliveryPartner {
-  id               String     @id @default(uuid())
-  name             String
-  email            String     @unique
-  phone            String
-  status           PartnerStatus
-  currentLoad      Int
-  areas            String[]
-  shiftStart       String
-  shiftEnd         String
-  rating           Float
-  completedOrders  Int
-  cancelledOrders  Int
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  id              String        @id @default(uuid())
+  name            String
+  email           String        @unique
+  phone           String
+  status          PartnerStatus
+  currentLoad     Int
+  areas           String[]
+  shiftStart      String
+  shiftEnd        String
+  rating          Float
+  completedOrders Int
+  cancelledOrders Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  assignments      Assignment[]
+  assignments Assignment[]
+
+  // ✅ Add this reverse field:
+  orders Order[]
 }
 
 model Assignment {
@@ -71,6 +77,6 @@ model Assignment {
   status    AssignmentStatus
   reason    String?
 
-  order     Order            @relation(fields: [orderId], references: [id])
-  partner   DeliveryPartner  @relation(fields: [partnerId], references: [id])
+  order   Order           @relation(fields: [orderId], references: [id])
+  partner DeliveryPartner @relation(fields: [partnerId], references: [id])
 }
