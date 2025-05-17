@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚚 Smart Delivery Management System
 
-## Getting Started
+A full-stack delivery management platform that enables efficient partner assignments, order tracking, and performance monitoring using smart logic (time, area, load).
 
-First, run the development server:
+## 🌟 Features Overview
+
+### ✅ Partner Management
+- Add / Edit / Delete Delivery Partners
+- Assign area, shift timings, and set active/inactive status
+- View all partners in a responsive card UI
+- Track performance via `/metrics`
+
+### ✅ Order Management
+- Add orders via UI or API (Postman supported)
+- View all orders with customer details, status, and assigned partner
+- Status flow: `Placed → Picked → Delivered`
+- Smart assignment logic auto-assigns to eligible partners
+
+### ✅ Smart Assignment Logic
+- Assigns based on:
+  - Active Status ✅
+  - Shift Time ✅
+  - Area Match ✅
+  - Load Limit (Max 3 active orders) ✅
+- Dynamic API-based assignment
+
+### ✅ Performance Metrics
+- Partner success ratio calculation
+- Metrics page `/metrics` shows tabular performance
+- Backend available at `/api/metrics/partners`
+
+### ✅ Frontend Pages
+| Page | Purpose |
+|------|---------|
+| `/partners` | Manage and view partners |
+| `/orders` | Manage and track orders |
+| `/metrics` | View performance metrics |
+
+### 🧠 Bonus Features
+- Clean and responsive UI (using Tailwind + shadcn/ui)
+- Smart dialogs with prefilled data for edits
+- State-sync without reloads
+- API-centric backend design
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 14 (App Router), Tailwind CSS, shadcn/ui
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL via Prisma ORM
+- **Tools**: TypeScript, Zustand (or other state management), Postman
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone https://github.com/KaranP666/smart-delivery-system.git
+cd smart-delivery-system
